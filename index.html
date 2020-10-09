@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>FortSwap Protocol</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">FortSwap Protocol</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem active">
+                                <a href="." class="nav-link">FortSwap</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="KeyFort%20Wallet/" class="nav-link">KeyFort</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="KeyFort%20Wallet/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="2"><a href="#fortswap" class="nav-link">FortSwap交易协议</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#1" class="nav-link">1 资金池基础</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#2-fortswap" class="nav-link">2. FortSwap交易协议</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#3-fortswap" class="nav-link">3. FortSwap安全分析</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#4-fortswap" class="nav-link">4. FortSwap 冷启动策略</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#_1" class="nav-link">参考文献：</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="fortswap">FortSwap交易协议</h2>
+<div class="toc">
+<ul>
+<li><a href="#fortswap">FortSwap交易协议</a></li>
+<li><a href="#1">1 资金池基础</a><ul>
+<li><a href="#11">1.1 资金池定义</a></li>
+<li><a href="#12">1.2 恒定资产乘积</a></li>
+<li><a href="#13">1.3 交易套利</a></li>
+</ul>
+</li>
+<li><a href="#2-fortswap">2. FortSwap交易协议</a><ul>
+<li><a href="#21">2.1 无常损失是永久损失</a></li>
+<li><a href="#22-fortswap">2.2 FortSwap目标</a></li>
+<li><a href="#23-fortswap">2.3 FortSwap 资金池设置</a></li>
+<li><a href="#24-fortswap">2.4 FortSwap 兑换交易</a></li>
+<li><a href="#25-fortswap">2.5 FortSwap 资金池套利</a></li>
+<li><a href="#26-fortswap">2.6 FortSwap 套利分析</a></li>
+</ul>
+</li>
+<li><a href="#3-fortswap">3. FortSwap安全分析</a></li>
+<li><a href="#4-fortswap">4. FortSwap 冷启动策略</a></li>
+<li><a href="#_1">参考文献：</a></li>
+</ul>
+</div>
+<h2 id="1">1 资金池基础</h2>
+<h3 id="11">1.1 资金池定义</h3>
+<p>资金池包括两种不同的数字资产，分别用 <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 表示。在创建资金池时，用户需要按照最接近实际市场价格的价格比例存入价值相等的 <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 。如果创建资产池的价格偏离市场价格，资金池创建者会被套利，从而蒙受损失。</p>
+<p>假设 <script type="math/tex">P_{A}</script> 、<script type="math/tex">P_{B}</script> 分别为 <script type="math/tex">Token A</script> 、<script type="math/tex">Token B</script> 以任一法币计价的价格，定义 <script type="math/tex">P_{A\rightarrow B}</script> 为 <script type="math/tex">Token A</script> 兑换为 <script type="math/tex">Token B</script> 的价格，即与 <script type="math/tex">1\  Token A</script> 等值的 <script type="math/tex">Token B</script> 的数量：</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B} = \frac{P_A}{P_B} \tag{1.1.1}</script>
+</p>
+<p>同理定义<script type="math/tex">\ P_{B \rightarrow A}</script> ，即 <script type="math/tex">Token B</script> 兑换为 <script type="math/tex">Token A</script> 的价格：</p>
+<p>
+<script type="math/tex; mode=display">P_{B \rightarrow A} = \frac{P_B}{P_A} \tag{1.1.2}</script>
+</p>
+<p>理论上，不考虑市场交易成本，则存在下列关系：</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B}*P_{B \rightarrow A} = 1 \tag{1.1.3}</script>
+</p>
+<p>假设 <script type="math/tex">N_{A}</script> 、<script type="math/tex">N_{B}</script> 分别为创建资金池时存入资金池的 <script type="math/tex">Token A</script>、 <script type="math/tex">Token B</script> 的数量，该资金池表示为：</p>
+<p>
+<script type="math/tex; mode=display">\left(N_A \ \middle| \ N_B\right) \tag{1.1.4}</script>
+</p>
+<p>资金池总是认为两种资产具有相等的市场价值，即存在下列相互等价的关系：</p>
+<p>
+<script type="math/tex; mode=display">N_{A}*P_{A} = N_{B}*P_{B} \tag{1.1.5}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">N_A = N_B * P_{B \rightarrow A} \tag{1.1.6}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">N_B = N_A * P_{A \rightarrow B} \tag{1.1.7}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B} = \frac{N_{B}}{N_{A}} \tag{1.1.8}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">P_{B \rightarrow A} = \frac{N_{A}}{N_{B}} \tag{1.1.9}</script>
+</p>
+<h3 id="12">1.2 恒定资产乘积</h3>
+<p>在资金池中进行资产兑换时，由于无法从链外取得 <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 的市场价格，需要设计一个兑换机制，确定 <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 互换比例关系。UniSwap、Balancer 等自动做市商 (Automated Market Maker) 类型的去中心化交易所 (DEX)，采用 “恒定资产乘积&rdquo; 公式确定兑换前后资金池中资产数量的变化，也即用户兑入、兑出资产的数量；</p>
+<p>对于资金池 <script type="math/tex">\left(N_{A}\  \middle| \ N_{B} \right)</script> ，&rdquo;恒定资产乘积&rdquo;公式表示为：</p>
+<p>
+<script type="math/tex; mode=display">N_{A}*N_{B}=K \tag{1.2.1}</script>
+</p>
+<p>
+<script type="math/tex">K</script> 值只在用户向资金池中存入流动性资产时才发生变化，在用户兑换资产的交易过程中保持恒定不变。</p>
+<p>假设在一笔兑换交易中，用户用 <script type="math/tex">Token A</script> 兑换 <script type="math/tex">Token B</script> ，兑入的 <script type="math/tex">Token A</script> 的数量为 <script type="math/tex">\mathrm{\Delta}_{A}</script> ，兑出的 <script type="math/tex">Token B</script> 的数量为 <script type="math/tex">\mathrm{\Delta}_{B}</script> 。（为表述方便，本文的 “兑入”、“兑出” 是相对资金池而言的，如果相对用户而言，“兑入”、“兑出” 关系则完全相反）。依据&rdquo;恒定资产乘积&rdquo;公式：</p>
+<p>
+<script type="math/tex; mode=display">\left( N_A * N_B \right) = \left( N_A + \mathrm{\Delta}_A \right) * \left(N_B - \mathrm{\Delta}_B \right) \tag{1.2.2}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\mathrm{\Delta}_B = \mathrm{\Delta}_A * \frac{N_B}{N_A + \mathrm{\Delta}_A} \tag{1.2.3}</script>
+</p>
+<p>可以看到兑换交易发生前、兑换交易发生后、以及用户兑换交易实际发生的价格是3个不同的价格。</p>
+<p>交易发生前资产价格（表示为 <script type="math/tex">P_{A \rightarrow B}^{0}</script>）为：</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B}^{0} = \frac{N_B}{N_A} \tag{1.2.4}</script>
+</p>
+<p>用户兑换交易实际发生的资产价格（表示为 <script type="math/tex">P_{A \rightarrow B}^{1}</script>）为：</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B}^{1} = \frac{\mathrm{\Delta}_B}{\mathrm{\Delta}_A} = \frac{N_B}{N_A + \mathrm{\Delta}_A} \tag{1.2.5}</script>
+</p>
+<p>交易发生后资产价格（表示为<script type="math/tex">\ P_{A \rightarrow B}^{2}</script>）为：</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B}^{2} = \frac{N_{B} - \mathrm{\Delta}_B}{N_A +  \mathrm{\Delta}_A} \tag{1.2.6}</script>
+</p>
+<p>显而易见：</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B}^{0} > P_{A \rightarrow B}^{1} > P_{A \rightarrow B}^{2} \tag{1.2.7}</script>
+</p>
+<p>即兑入资产 <script type="math/tex">Token A</script> 相对于兑出资产 <script type="math/tex">Token B</script> 的价格，在兑换交易发生后，发生了滑动。兑换交易发生前 <script type="math/tex">Token A</script> 的价格，高于用户兑换交易实际发生的价格，而用户兑换交易实际发生的价格，也高于兑换完成后资金池中 <script type="math/tex">Token A</script> 的价格。即兑换交易完成后， 资金池内 <script type="math/tex">Token A</script> 的价格发生了下跌，相应地，<script type="math/tex">Token B</script> 的价格产生了上涨。</p>
+<h3 id="13">1.3 交易套利</h3>
+<p>假设兑换交易后， <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 的市场价格并未发生变化，还是兑换交易前的价格，则由于资产价格滑动交易用户会蒙受兑换损失，损失金额计算如下：</p>
+<p>
+<script type="math/tex; mode=display">Lost_{A \rightarrow B} = \mathrm{\Delta}_A * \frac{N_B}{N_A} - \mathrm{\Delta}_A * \frac{N_B}{N_A + \mathrm{\Delta}_A} = \mathrm{\Delta}_A * \frac{N_B}{N_A} / \left( 1 + \frac{N_A} {\mathrm{\Delta}_{A}} \right) \tag{1.3.1}</script>
+</p>
+<p>可见用户兑入的Token A的比列 <script type="math/tex">\left(\mathrm{\Delta}_{A}\ / \ N_{A}\right)</script>  越大，蒙受的兑换损失也会越大。</p>
+<p>如果该交易完成后，另一用户进行逆向兑换，根据 &ldquo;恒定资产乘积&rdquo; 公式，他只要兑入 <script type="math/tex">\mathrm{\Delta}_B</script> 的 <script type="math/tex">Token B</script> ，即可获得 <script type="math/tex">\mathrm{\Delta}_A</script> 的 <script type="math/tex">Token A</script> ，交易完成后，交易池内资产价格恢复为 <script type="math/tex">P_{A \rightarrow B} = N_{B}/N_{A}</script> ，该用户以较高的 <script type="math/tex">Token B</script> 价格完成交易，实际上实现了对前一用户兑换损失的套利,套利金额等同于前一用户的兑换损失。交易池，或者说交易池的流动性资金提供者在两次交易中，收益只是两次交易的交易手续费，而由于价格滑动产生的套利机会，资金池是无缘分享的。</p>
+<p>由于交易池的流动性资金提供者唯一的收益来源是交易手续费，导致采用AMM机制的去中心化交易所（DEX）的交易手续费普遍高于中心化交易所（CEX）。去中心化交易所用户需要承受 2 项高昂的交易费用：一是智能合约平台的交易GAS费用；一是DEX兑换交易的交易手续费。高昂的交易费用显然不利于吸引用户离开中心化交易所，更多地使用去中心化交易所。</p>
+<p>有没有可能设计一种交易机制，让交易池也能够分享由于交易价格滑动形成的套利机会，从而增加交易池的服务收益，进而将去中心化交易所的兑换交易手续费降低到跟中心化交易所接近，甚至更低的水平呢？</p>
+<p>这是FortSwap交易协议尝试解决的问题。</p>
+<h2 id="2-fortswap">2. FortSwap交易协议</h2>
+<h3 id="21">2.1 无常损失是永久损失</h3>
+<p>流动性资金提供者在提供流动性时，需要向资金池中注入两种总价值相等的相应数量的代币，随着交易的发生，用户权益对应的代币数量会也发生变动。如果用户初始投入 <script type="math/tex">Token A</script> 的数量为 <script type="math/tex">X_{A}</script> ，当用户退出流动性时，如果 <script type="math/tex">Token A</script> 的市场价格发生了上涨，则用户得到的 <script type="math/tex">Token A</script> 数量 <script type="math/tex">{X'}_{A}</script> 可能会小于 <script type="math/tex">X_{A}</script>，如果提供流动性获得的交易手续费收入不足以弥补 <script type="math/tex">Token A</script> 数量减少造成的损失，则流动性提供者相对于一直持有 <script type="math/tex">Token A</script> 、<script type="math/tex">Token B</script> 而不是提供流动性服务，则蒙受了损失。分析表明，无论 <script type="math/tex">Token A</script>、<script type="math/tex">Token B</script>的价格上涨还是下跌，只要他们的比价相对于用户提供流动性是发生了偏离，用户都会蒙受损失。该损失大小随市场价格变化，用户无法控制，也被称为 &ldquo;无常损失&rdquo;。</p>
+<p>实际上，“ 无常损失” 是一定会发生的永久损失。下面进行分析：</p>
+<p>以 <script type="math/tex">Token B</script> 的价格作为基准，不考虑交易手续费收入，初期用户投入资金池的代币数量为 <script type="math/tex">\left( X_{A} \middle| Y_{B} \right)</script> ，<script type="math/tex">Token A</script> 相对于 <script type="math/tex">Token B</script> 的价格为 <script type="math/tex">P_1</script>, 期末用户撤出资金池的代币数量为 <script type="math/tex">\left( X'_{A} \middle| Y'_{B} \right)</script>, <script type="math/tex">Token A</script> 相对于 <script type="math/tex">Token B</script> 的价格为 <script type="math/tex">P_2</script>, 则：</p>
+<p>如果用户没有参加流动性挖矿，而是简单持有 <script type="math/tex">\left( X_{A} \middle| Y_{B} \right)</script> 代币，期末价值为：</p>
+<p>
+<script type="math/tex; mode=display">V_1=X_A*P_2+Y_B \tag{2.1.1}</script>
+</p>
+<p>用户参加流动性挖矿，实际拥有 <script type="math/tex">\left( X'_{A} \middle| Y'_{B} \right)</script> 代币的价值为：</p>
+<p>
+<script type="math/tex; mode=display">V_2=X'_A*P_2+Y'_B \tag{2.1.2}</script>
+</p>
+<p>考虑到：</p>
+<p>
+<script type="math/tex; mode=display">\left\{ \begin{matrix}
+X_{A} * Y_{B} = {X'}_{A} * {Y'}_{B} \tag{2.1.3}\\
+P_{1} = Y_{B} / X_{A} \\
+P_{2} = {Y'}_{B} / {X'}_{A} \\
+\end{matrix} \right. </script>
+</p>
+<p>则有：</p>
+<p>
+<script type="math/tex; mode=display">\frac{V_2}{V_1} = \frac{2\sqrt{P_1*P_2}}{P_1+P_2} = \sqrt{\frac{4P_{1}P_{2}}{\left( P_{1} - P_{2} \right)^{2} + 4P_{1}P_{2}}} \leq 1 \tag{2.1.4}</script>
+</p>
+<p>可见只要 <script type="math/tex">P_1 \neq P_2</script>，<script type="math/tex">V_2</script> 就总是小于 <script type="math/tex">V_1</script>，即用户以 <script type="math/tex">Token B</script> 计价的总资产价值相对于简单持有两种代币，一定是减少的。同理用户以 <script type="math/tex">Token A</script> 计价的总资产价值也一定是减少的，所以所谓的无常损失（Impermanent Loss）实际上是一定会发生的永久损失（Permanent Loss），只是该损失金额会随着价格的变动而变动。</p>
+<h3 id="22-fortswap">2.2 FortSwap目标</h3>
+<p>FortSwap 交易协议主要实现3个目标：</p>
+<p>目标1：交易池的流动性提供者能够自动参与价格滑点套利，获得套利收益；</p>
+<p>如前面介绍，目前AMM去中心化交易所的流动性资金提供者的唯一收益是交易手续费，不能分享交易滑点带来的套利机会。FortSwap 协议通过实现自动套利机制，使得流动性资金提供者能够享有更多的服务收益，从而吸引更多的流动性资金提供者，增加交易池的资金稳定性，同时也为实现 FortSwap 协议的第二个目标，即降低交易手续费提供条件。</p>
+<p>目标2：降低采用 FortSwap 协议的去中心化交易所的交易手续费费率，由目前的3‰降为1‰，与中心化交易所持平，将来逐步降为0.5‰，直至免费。（不考虑智能合约平台的交易GAS费）。</p>
+<p>由于自动套利机制的实现，流动性资金提供性者可以获得更多的服务收益，从而具备了降低交易手续费的条件。随着交易手续费降低，可以吸引更多的去中心化交易所用户，跟中心化交易所直接竞争。</p>
+<p>目标3：为流动性提供者的流动性资产提供保护，降低&rdquo;无常损失&rdquo;；</p>
+<p>FortSwap 协议的流动性资金提供者在提供流动性时，可以设定两种代币中的任意一种代币作为被保护代币，在退出资金池流动性时，FortSwap 协议能够确保用户得到的该代币的数量不会低于一开始用户投入的该代币的数量。FortSwap 协议只能为两种代币中的一种提供保护，不能同时为两种代币提供保护。</p>
+<p>通过提供代币保护机制，FortSwap协议可以允许流动性提供者为自己看好的代币提供保护，降低该代币价格上涨时蒙受的无常损失。</p>
+<h3 id="23-fortswap">2.3 FortSwap 资金池设置</h3>
+<p>FortSwap 协议会为交易对 <script type="math/tex">\left(Token_A \ \middle| \ Token_B \right)</script> 设置两个独立的子资金池：</p>
+<p>
+<script type="math/tex; mode=display">\left( N_{AA} \ \middle| \ N_{B}\right)\ || \ \left(N_A\ \middle| \ N_{BB} \right) \tag{2.1.4} </script>
+</p>
+<p>其中子资金池 <script type="math/tex">\left(N_{AA}\ \middle| \ N_{B} \right)</script> （简称 <script type="math/tex">A</script> 子资金池 、<script type="math/tex">A</script> 池）对 <script type="math/tex">Token A</script> 提供底限保护，子资金池 <script type="math/tex">\left(N_{A}\ \middle| \ N_{BB} \right)</script> （简称 <script type="math/tex">B</script> 子资金池、<script type="math/tex">B</script> 池）对 <script type="math/tex">Token B</script> 提供底限保护。</p>
+<p>流动性提供者在向资金池注入资金时，如果选择对 <script type="math/tex">Token A</script> 进行保护，则流动性资金注入 <script type="math/tex">A</script> 子资金池，FortSwap 协议会记录每个用户注入的 <script type="math/tex">Token A</script> 数量，并以此为依据记录用户的流动性权益，FortSwap 还会累计所有流动性提供者注入 <script type="math/tex">A</script> 子资金池的 <script type="math/tex">Token A</script> 的总量，该总量用 <script type="math/tex">N_{A0}</script> 表示。当发生资金池套利操作，资金在两个子资金池 <script type="math/tex">\left(N_{AA}\ \middle| \ N_{B}\right)</script> 和 <script type="math/tex">\left(N_{A}\ \middle| \ N_{BB} \right)</script> 之间流动时，总量 <script type="math/tex">N_{A0}</script> 会对子资金池之间的套利资金流动产生约束。</p>
+<p>同样，当流动性提供者向资金池注入资金时，如果选择对 <script type="math/tex">Token B</script> 进行保护，则流动性资金注入 <script type="math/tex">\left(N_{A}\ \middle| \ N_{BB} \right)</script> 子资金池，FortSwap 协议会记录每个用户注入的 <script type="math/tex">Token B</script> 数量，并以此为依据记录用户的流动性权益，FortSwap 也会累计所有流动性提供者注入 <script type="math/tex">\left(N_{A}\ \middle| \ N_{BB} \right)</script> 子资金池的 <script type="math/tex">Token B</script> 的总量，设该总量用 <script type="math/tex">N_{B0}</script> 表示，当发生资金池套利操作，资金在两个子资金池 <script type="math/tex">\left(N_{AA}\ \middle| \ N_{B} \right)</script> 和 <script type="math/tex">\left(N_{A}\ \middle| \ N_{BB} \right)</script> 之间流动时，总量 <script type="math/tex">N_{B0}</script> 会对子资金池之间的套利资金流动产生约束。</p>
+<p>流动性提供者向资金池注入资金时，如果不明确选择保护 <script type="math/tex">Token A</script> 或 <script type="math/tex">Token B</script> ，FortSwap 会将用户注入资金按照 50: 50 的比例分别加入 <script type="math/tex">A</script> 池、<script type="math/tex">B</script> 池，并按照注入的子资金池规则各自计算权益和进行资产保护。</p>
+<p>（可能会由于保护机制，在价格单边上涨或下跌时，发生流动性枯竭，这时需要外部交易者进行交易套利，加入流动性。也要考虑是否存在由于缺乏流动性，将交易锁死的情况）</p>
+<h3 id="24-fortswap">2.4 FortSwap 兑换交易</h3>
+<p>用户跟资金池进行 <script type="math/tex">Token A</script> 与 <script type="math/tex">Token B</script> 的兑换交易时，会有2种相反的交易操作，一是兑入 <script type="math/tex">Token A</script> ，兑出 <script type="math/tex">Token B</script> ；一是兑入 <script type="math/tex">Token B</script> ，兑出 <script type="math/tex">Token A</script> 。这里 “兑入” 和 “兑出” 是对交易池而言的。</p>
+<p>如果用户兑入 <script type="math/tex">Token A</script> 、兑出 <script type="math/tex">Token B</script> ，FortSwap 会将该交易的交易对手设为 <script type="math/tex">\left(N_{AA}\  \middle| \ N_{B} \right)</script> 子资金池，即 <script type="math/tex">A</script> 池。<script type="math/tex">A</script> 池总是兑入 <script type="math/tex">Token A</script> ，兑出 <script type="math/tex">Token B</script> ，所以 <script type="math/tex">N_{AA}</script> 的数量一直会上升，<script type="math/tex">N_{B}</script> 的数量一直会下降，这会有两个效果：1）<script type="math/tex">A</script> 池的 <script type="math/tex">N_{AA}</script> 数量永远都会大于流动性提供者申明保护的 <script type="math/tex">Token A</script> 总量 <script type="math/tex">N_{A0}</script>，从而确保任一用户退出流动性时，一定可以得到申明保护的 <script type="math/tex">Token A</script> 数量；2）<script type="math/tex">A</script> 池内以 <script type="math/tex">Token B</script> 计价的 <script type="math/tex">Token A</script> 的价格会单调下降，导致 <script type="math/tex">Token A</script> 的价格偏离实际市场价格，这种价格偏离会为 FortSwap 资金池提供套利空间。</p>
+<p>同样，如果用户兑入 <script type="math/tex">Token B</script> ，兑出 <script type="math/tex">Token A</script> ，FortSwap 会将交易对手设为 <script type="math/tex">B</script> 子资金池。<script type="math/tex">B</script> 池总是兑入 <script type="math/tex">Token B</script> ，兑出 <script type="math/tex">Token A</script> ，所以 <script type="math/tex">N_{BB}</script> 的数量会一直上升，<script type="math/tex">N_A</script> 的数量会一直下降，这同样会有两个效果：1）<script type="math/tex">B</script> 池的 <script type="math/tex">N_{BB}</script> 数量会一直大于流动性提供者申明保护的 <script type="math/tex">Token B</script> 总量 <script type="math/tex">N_{B0}</script>，从而确保用户退出流动性时，一定可以得到申明保护的的 <script type="math/tex">Token B</script> 数量；2）<script type="math/tex">B</script> 池内以 <script type="math/tex">Token A</script> 计价的 <script type="math/tex">Token B</script> 的价格单调下降，最终偏离实际市场价格，从而为 FortSwap 资金池提供套利空间。</p>
+<p>子资金池 <script type="math/tex">\left(N_{AA}\ \middle| \ N_{B} \right)</script>，<script type="math/tex">\left(N_{A}\ \middle| \ N_{BB} \right)</script> 是两个单向的方向相反的资金池，它们总是固定买入一种代币，卖出另一种代币。随着交易的发生，两种代币的价格在两个子资金池内总是以相反的方向滑动，积累一定交易量后，同一代币在两个子资金池内的价差就会超过一定的幅度。价差过大会阻止用户参与兑换交易，这时需要在两个子资金池内进行两种资产的资金调配，让代币的反向兑换价差进行一定程度的恢复。在两个子资金池内进行资金调配的过程实际上是一个资金池套利过程。交易用户在两个单向资金池内的单向交易，会造成代币价格单向滑动，用户会因此蒙受价格滑动造成的交易损失。通过两个子资金池相互进行资产调配，既可以对价格滑点进行修复，又可以实现对用户交易滑点损失的套利，为资金池流动性提供者带来套利收益。</p>
+<h3 id="25-fortswap">2.5 FortSwap 资金池套利</h3>
+<p>表示两个单向子资金池为：</p>
+<p>
+<script type="math/tex; mode=display">\left( N_{AA} \ \middle| \ N_{B} : N_{A0}\right)\ || \ \left( N_A \ \middle| \ N_{BB} : N_{B0} \right) \tag{2.5.1}</script>
+</p>
+<p>其中 <script type="math/tex">N_{AA}</script>, <script type="math/tex">N_{BB}</script> 分别为两个单向资金池 <script type="math/tex">A</script> 池、<script type="math/tex">B</script> 池内 <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 的总量，<script type="math/tex">N_{A0}</script>，<script type="math/tex">N_{B0}</script> 是 <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 的保护总量。</p>
+<p>
+<script type="math/tex">Token A</script> 、<script type="math/tex">Token B</script> 在两个子资金池内的价格随着交易发生会产生偏离，当价格偏离较大时，需要在两个子资金池内进行套利操作。套利操作同时也是子两个资金池的资产调配，可以恢复价格偏离。</p>
+<p>
+<script type="math/tex">Token A</script> 在两个资金池内的价格为：</p>
+<p>
+<script type="math/tex; mode=display">P_{AA \rightarrow B} = \frac{N_{B}}{N_{AA}} \tag{2.5.2}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow {BB}} = \frac{N_{BB}}{N_A} \tag{2.5.3}</script>
+</p>
+<p>其价格比为：</p>
+<p>
+<script type="math/tex; mode=display">R_{PA} = \frac{P_{A \rightarrow BB}}{P_{AA \rightarrow B}} = \frac{N_{AA} * N_{BB}}{N_{B} \ * \ N_{A}} \tag{2.5.4}</script>
+</p>
+<p>同理，<script type="math/tex">Token B</script> 在两个资金池内的价格为：</p>
+<p>
+<script type="math/tex; mode=display">P_{BB \rightarrow A} = \frac{N_A}{N_{BB}} \tag{2.5.5}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">P_{B \rightarrow {AA}} = \frac{N_{AA}}{N_B} \tag{2.5.6}</script>
+</p>
+<p>其价格比为：</p>
+<p>
+<script type="math/tex; mode=display">R_{PB} = \frac{P_{B \rightarrow AA}}{P_{BB \rightarrow A}} = \frac{N_{AA} * N_{BB}}{N_{B} * N_{A}} \tag{2.5.7}</script>
+</p>
+<p>可见，两个子资金池内 <script type="math/tex">Token A</script>，<script type="math/tex">Token B</script> 的价格比相同，即：</p>
+<p>
+<script type="math/tex; mode=display">R_{PA} = R_{PB} = R_{P} = \frac{N_{AA} * N_{BB}}{N_{B} * N_A} \tag{2.5.8}</script>
+</p>
+<p>FortSwap 协议设定当 <script type="math/tex">R_{P}</script> 的值，即价格偏离大于一定门限值（如101%），自动启动内部套利机制，恢复价格。</p>
+<p>套利操作就是利用一个子资金池数量较多的资产，等价值兑换另一个子资金池的数量较多的另一个资产，即 <script type="math/tex">\left( N_{AA} \ \middle| \ N_{B} : N_{A0}\right)</script> 子资金池利用 <script type="math/tex">Token A</script> 换取 <script type="math/tex">\left( N_A \ \middle| \ N_{BB} : N_{B0} \right)</script> 子资金池等价值的 <script type="math/tex">Token B</script> ；换个角度看，等价于 <script type="math/tex">\left( N_A \ \middle| \ N_{BB} : N_{B0} \right)</script> 子资金池用 <script type="math/tex">Token B</script> 换取 <script type="math/tex">\left( N_{AA} \ \middle| \ N_{B} : N_{A0}\right)</script> 子资金池等价值的<script type="math/tex">Token A</script> 。为保证兑换公平，兑换价格定为两个子资金池所有资产的平均价格，即：</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B}^e = \frac{N_{B} + N_{\text{BB}}}{N_{A} + N_{\text{AA}}} \tag{2.5.9}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">P_{B \rightarrow A}^e = \ \frac{N_{A} + N_{\text{AA}}}{N_{B} + N_{\text{BB}}} \tag{2.5.10}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">P_{A \rightarrow B}^e * P_{B \rightarrow A}^e = \ 1 \tag{2.5.11}</script>
+</p>
+<p>套利操作除了考虑兑换价值相等外，还需要考虑兑换代币后的剩余代币数量不能低于 <script type="math/tex">Token A</script> 和 <script type="math/tex">Token B</script> 的保护代币总量。</p>
+<p>套利操作可以表示为：</p>
+<p>
+<script type="math/tex; mode=display">\left(N_{AA} - L_A \ \middle| \ N_B + L_B : N_{A0} \right)\ ||\ \left( N_A + L_A \ \middle| \ N_{BB} - L_B : N_{B0} \right) \tag{2.5.12}</script>
+</p>
+<p>即在资金池套利操作中，<script type="math/tex">A</script> 池利用数量为 <script type="math/tex">L_A</script> 的 <script type="math/tex">Token A</script> 换取数量为 <script type="math/tex">L_B</script> 的 <script type="math/tex">Token B</script> ，考虑交换价值相等，以及 <script type="math/tex">A</script> 池及 <script type="math/tex">B</script> 池的保护代币数量约束，则存在下列关系：</p>
+<p>
+<script type="math/tex; mode=display">\left\{ \begin{matrix}
+N_{AA} - L_A \geq N_{A0} \tag{2.5.13} \\[1mm]
+N_{BB} - L_B \geq N_{B0} \\[1mm]
+L_{B} = L_{A}*P_{A \rightarrow B}^e \\
+\end{matrix} \right. </script>
+</p>
+<p>套利操作完成后，<script type="math/tex">A</script> 池的 <script type="math/tex">Token A</script> 价格（以 <script type="math/tex">Token B</script> 计价）将会上涨，但不应该超过整体资金池的平均价格 <script type="math/tex">P_{A \rightarrow B}^e</script>，同样 <script type="math/tex">B</script> 池的 <script type="math/tex">Token B</script> 价格（以 <script type="math/tex">Token A</script> 计价）也会上涨，但也不应该超过整体资金池的平均价 <script type="math/tex">P_{B \rightarrow A}^e</script>，即存在下列关系式：</p>
+<p>
+<script type="math/tex; mode=display">\begin{cases}
+\Large \frac{N_B \ + \ L_B}{N_{AA} \ - \ L_A} \normalsize \leq P_{A \rightarrow B}^e \tag{2.5.14}\\[2.5mm]
+\Large \frac{N_A \ + \ L_A}{N_{BB} \ - \ L_B} \normalsize \leq P_{B \rightarrow A}^e \\[1mm]
+\end{cases} </script>
+</p>
+<p>总体而言，套利操作必须满足存在下列约束关系：</p>
+<p>
+<script type="math/tex; mode=display">\left\{ \begin{matrix} 
+\normalsize L_{B} = L_A * P_{A \rightarrow B}^e \\[1mm]
+\normalsize N_{AA} - L_A \geq N_{A0} \\[1mm]
+\normalsize N_{BB} - L_B \geq N_{B0} \\[1mm]
+\Large \frac{N_B \ + \ L_B}{N_{AA} \ - \ L_A} \normalsize \leq P_{A \rightarrow B}^e \\[2.5mm]
+\Large \frac{N_A \ + \ L_A}{N_{BB} \ - \ L_B} \normalsize \leq P_{B \rightarrow A}^e \\[1mm]
+ \end{matrix} \right. \tag{2.5.15} </script>
+</p>
+<p>对于 <script type="math/tex">A</script> 池而言，<script type="math/tex">L_A</script> 存在下列约束关系：
+<script type="math/tex; mode=display">\left\{ \begin{matrix}
+L_A \leq N_{AA} - N_{A0} \\[1mm]
+L_A \leq \Large \frac{N_{AA} \ - \ P_{B \rightarrow A}^e \ * \ N_B}{2} \\
+\end{matrix} \right. \tag{2.5.16} </script>
+</p>
+<p>类似地，对于 <script type="math/tex">B</script> 池而言，<script type="math/tex">L_{B}</script> 存在下列约束关系：</p>
+<p>
+<script type="math/tex; mode=display">\left\{ \begin{matrix}  
+L_B \leq N_{BB} - N_{B0} \\[1mm]
+L_B \leq \Large \frac{N_{BB} \ - \ P_{A \rightarrow B}^e \ * \ N_A}{2} \\
+\end{matrix} \right. \tag{2.5.17} </script>
+</p>
+<p>由于 <script type="math/tex">L_{B} = L_{A} * P_{A \rightarrow B}</script> ，套利操作时，实际发生的 <script type="math/tex">L_{A}</script>、<script type="math/tex">L_{B}</script> 必须同时满足上述两组约束关系。</p>
+<h3 id="26-fortswap">2.6 FortSwap 套利分析</h3>
+<p>从 <script type="math/tex">A</script> 池、<script type="math/tex">B</script> 池的流动性资金提供者的角度看，子资金池的资金调配，也即套利操作需要做如下考虑：</p>
+<p>1）A池、B池必须都在套利操作中取得正向收益。一方收益、一方受损则有失公平，套利机制无法成立；</p>
+<p>2）A池、B池的套利收益需要合理平衡，一方收益大，另一方收益小，则套利机制也存在缺陷；</p>
+<p>3）A池、B池从各自的角度考虑，都希望自己在套利操作中，收益最大化。最为理想的情况是，套利机制能够同时实现资金池双方的收益最大化。</p>
+<p>套利操作的收益大小，可以通过套利操作前后，子资金池的 “恒定资产乘积” 的变化来衡量。下面对套利操作完成后，两个子资金池的 <script type="math/tex">K</script> 值变化进行分析。</p>
+<p>对于 <script type="math/tex">A</script> 子资金池，套利后的K值变化为：</p>
+<p>
+<script type="math/tex; mode=display">\begin{aligned}
+{{\Delta}K}_A &= \left( N_{AA} - L_A \right) * \left( N_B + L_B \right) - N_{AA} * N_B \\
+&= N_{AA} * L_B - L_A * N_B - L_A * L_B \\
+&= {-P}_{A \rightarrow B}^e * L_A^2 + \left( N_{AA} * P_{A \rightarrow B}^e - N_B \right) * L_A \\
+&= {-P}_{A \rightarrow B}^e * \left( L_A - \frac{N_{AA} - N_B * P_{B \rightarrow A}^e}{2} \right)^2 + \frac{\left( N_{AA} - N_B * P_{B \rightarrow A}^e \right)^2}{4*P_{B \rightarrow A}^e}
+\end{aligned} \tag{2.6.1} </script>
+</p>
+<p>可见对于 <script type="math/tex">A</script> 池，当 <script type="math/tex">L_A = L_A^M</script> 时，<script type="math/tex">K</script> 值增加最大，即 <script type="math/tex">A</script> 池获得最大套利收益：</p>
+<p>
+<script type="math/tex; mode=display">L_A^M = \frac{N_{AA} - N_B * P_{B \rightarrow A}^e}{2} \tag{2.6.2} </script>
+</p>
+<p>对于 <script type="math/tex">B</script> 子资金池：</p>
+<p>
+<script type="math/tex; mode=display">\begin{aligned}
+{{\Delta}K}_B &= \left( N_{BB} - L_B \right) * \left( N_A + L_A \right) - N_{BB} * N_A \\
+&= N_{BB} * L_A - L_B * N_A - L_A * L_B \\
+&= {-P}_{B \rightarrow A}^e * L_B^2 + \left( N_{BB} * P_{B \rightarrow A}^e - N_A \right) * L_B \\
+&= {-P}_{B \rightarrow A}^e * \left( L_B - \frac{N_{BB} - N_A * P_{A \rightarrow B}^e}{2} \right)^2 + \frac{\left( N_{BB} - N_A * P_{A \rightarrow B}^e \right)^2}{4*P_{A \rightarrow B}^e} \end{aligned} \tag{2.6.3}</script>
+</p>
+<p>同样对于 <script type="math/tex">B</script> 池，当 <script type="math/tex">L_B = L_B^M</script> 时，<script type="math/tex">K</script> 值有最大增加值，即 <script type="math/tex">B</script> 池获得最大套利收益：</p>
+<p>
+<script type="math/tex; mode=display">L_B^M = \frac{N_{BB} - N_A * P_{A \rightarrow B}^e}{2} \tag{2.6.4} </script>
+</p>
+<p>对于 <script type="math/tex">A</script> 和 <script type="math/tex">B</script> 子资金池，出于维护各自利益的考虑，在完成套利操作后，双方的 <script type="math/tex">K</script> 值都必须增加，而且 <script type="math/tex">A</script> 池、<script type="math/tex">B</script> 池一定都希望各自 <script type="math/tex">K</script> 值的增加值最大化。从公式 <script type="math/tex">(2.6.2)、(2.6.3)</script>可以看出，<script type="math/tex">A</script> 池、<script type="math/tex">B</script> 池确实都存在一个最优的资金兑换量，即 <script type="math/tex">L_A^M、L_B^M</script>，能够实现各自 <script type="math/tex">K</script> 值增量最大化。不妨计算一下 <script type="math/tex">L_A^M</script> 对应的 <script type="math/tex">Token B</script> 的数量 <script type="math/tex">L_B^{Mx}</script>，看看跟 <script type="math/tex">L_B^M</script> 是什么关系。 </p>
+<p>
+<script type="math/tex; mode=display">\begin{aligned}
+L_B^{Mx} &= L_A^M * P_{A \rightarrow B}^e \\[1mm]
+&= \frac{N_{AA} - N_B * P_{B \rightarrow A}^e}{2} * P_{A \rightarrow B}^e \\[1mm]
+&= \frac{N_{AA} * P_{A \rightarrow B}^e - N_B}{2} \\[1mm]
+&= \frac{(N_{AA} + N_A)* P_{A \rightarrow B}^e - N_B -N_A * P_{A \rightarrow B}^e }{2} \\[1mm]
+&= \frac{(N_{BB} + N_B) - N_B -N_A * P_{A \rightarrow B}^e }{2} \\[1mm]
+&= \frac{N_{BB} -N_A * P_{A \rightarrow B}^e }{2} \\[1mm]
+&= L_B^{M}
+\end{aligned} \tag{2.6.5} </script>
+</p>
+<p>非常魔幻的是，<script type="math/tex">L_B^{Mx} \equiv L_B^M</script>，也就是说，<script type="math/tex">L_A^M、L_B^M</script> 是相互等价的，这意味着，FortSwap 套利协议能够同时实现 <script type="math/tex">A</script> 池、<script type="math/tex">B</script> 池的 <script type="math/tex">K</script> 值增量最大化。
+<script type="math/tex; mode=display">L_A^M \iff L_B^M \tag{2.6.6}</script>
+</p>
+<p>由此可见，不考虑 <script type="math/tex">N_{A0}</script>、<script type="math/tex">N_{B0}</script> 的约束，当 <script type="math/tex">A</script> 池 和 <script type="math/tex">B</script> 池采用池内所有的资金的平均价格进行套利兑换时，下面的套利策略能够同时实现 <script type="math/tex">A</script> 池 和 <script type="math/tex">B</script> 池 <script type="math/tex">K</script> 值增量的最大化：</p>
+<p>
+<script type="math/tex; mode=display">\left\{ \begin{matrix}
+P_{B \rightarrow A}^e = \Large \frac{N_{A} + \ N_{\text{AA}}}{N_{B} + \ N_{\text{BB}}} \\[4mm]
+L_A = \Large \frac{N_{AA} - P_{B \rightarrow A}^e * N_B}{2} \\[3mm]
+L_B = \Large \frac{N_{BB} - P_{A \rightarrow B}^e * N_A}{2} \\
+\end{matrix} \right.  \tag{2.6.7} </script>
+</p>
+<p>当然这一套利策略能否同时满足下面的约束条件，还需要研究：
+<script type="math/tex; mode=display">\left\{ \begin{matrix}
+L_A \leq N_{AA} - N_{A0} \\[1mm]
+L_B \leq N_{BB} - N_{B0}
+\end{matrix} \right. \tag{2.6.8} </script>
+</p>
+<h2 id="3-fortswap">3. FortSwap安全分析</h2>
+<h2 id="4-fortswap">4. FortSwap 冷启动策略</h2>
+<h2 id="_1">参考文献：</h2>
+<p>1、 Hayden Adams. Uniswap contract. https://github.com/Uniswap/contracts-vyper.</p>
+<p>2、 Vitalik Buterin. The x*y=k market maker model. <a href="https://ethresear.ch/t/improving-front-running-resistance-of-x-y-k-market-makers">https://ethresear.ch/t/improving-front-running-resistance-of-x-y-k-market-makers</a>.</p>
+<p>3、 Hayden Adams. 2018. url: https://hackmd.io/\@477aQ9OrQTCbVR3fq1Qzxg/HJ9jLsfTz?type=view.</p>
+<p>4、 Guillermo Angeris et al. An analysis of Uniswap markets. https://arxiv.org/pdf/1911.03380.pdf</p>
+<p>5、 samczsun. Taking undercollateralized loans for fun and for profit. Sept. 2019. url:https : / / samczsun . com / taking - undercollateralized - loans - for - fun - and - for - profit/.</p>
+<p>6、Fabian Vogelsteller and Vitalik Buterin. Nov. 2015. url: https://eips.ethereum.org/EIPS/eip-20.</p>
+<p>7、 Jordi Baylina Jacques Dafflon and Thomas Shababi. EIP 777: ERC777 Token tandard.Nov. 2017. url: https://eips.ethereum.org/EIPS/eip-777.</p>
+<p>8、 Radar. WTF is WETH? url: https://weth.io/.</p>
+<p>9、 Uniswap.info. Wrapped Ether (WETH). url: https://uniswap.info/token/0xc02aaa39b223fe8d0a0e5c4f27e</p>
+<p>10、 Vitalik Buterin. EIP 1014: Skinny CREATE2. Apr. 2018. url: https://eips.ethereum.org/EIPS/eip-1014.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>Copyright &copy; 2020-2025 <a href="https://www.FortSwap.com" target="_blank">www.FortSwap.com</a></p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.1
+Build Date UTC : 2020-10-09 23:49:10
+-->
